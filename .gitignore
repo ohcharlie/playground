@@ -1,0 +1,49 @@
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Build Artifacts and Compiled Files
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*.pyc
+*.o
+*.obj
+*.class
+*.dll
+*.exe
+*.out
+*.zip
+*.tar.gz
+*.rar
+dist/
+build/
+bin/
+
+# Dependency Directories
+node_modules/
+vendor/
+env/
+.venv/
+
+# Logs and Caches
+npm-debug.log
+yarn-debug.log
+debug.log
+*.cache
+.pytest_cache/
+
+# User-specific Configuration Files (if not part of the project's shared config)
+config.local.php
+.env
+*.local.yml
+*.local.yaml
+
+__debug*
