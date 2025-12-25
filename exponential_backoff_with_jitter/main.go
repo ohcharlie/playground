@@ -6,6 +6,8 @@ import (
 	"errors"
 	"log/slog"
 	"math/rand/v2"
+	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -50,20 +52,29 @@ func main() {
 		return 0, errors.New("random error")
 	}
 
-	successCount := 0
-	successCountWithRetry := 0
-	for i := 0; i < 10; i++ {
-		_, err := testFn()
-		if err == nil {
-			successCount++
-		}
+	var successCount atomic.Int32
+	var successCountWithRetry atomic.Int32
+	var wg sync.WaitGroup
+	for i := 0; i < 100; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			_, err := testFn()
+			if err == nil {
+				successCount.Add(1)
+			}
+		}()
 
-		_, err = RetryWithExponentialBackoff(testFn)
-		if err == nil {
-			successCountWithRetry++
-		}
-
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			_, err := RetryWithExponentialBackoff(testFn)
+			if err == nil {
+				successCountWithRetry.Add(1)
+			}
+		}()
 	}
+	wg.Wait()
 
-	slog.Info("done", "successCount", successCount, "successCountWithRetry", successCountWithRetry)
+	slog.Info("done", "successCount", successCount.Load(), "successCountWithRetry", successCountWithRetry.Load())
 }
